@@ -3,8 +3,9 @@ public class Player {
 	protected int playerPos; 
 	protected long money; 
 	public static numOfPlayer = 0; 
+	public count = 0;
 	
-	public Player(int playerNum; long money) {
+	public Player(int playerNum, long money) {
 		this.playerNum = playerNum; 
 		this.playerPos = 0; 
 		this.money = money; 
@@ -25,10 +26,12 @@ public class Player {
 	public int movePlayer(int move) { 
 		for (int i = 0; i < move; i++) { 
 			if (this.playerPos < 39) { 
-				playerPos += 1; 
+				playerPos += 1;
+				count += 1; 
 			}
 			else { 
 				playerPos = 0; 
+				count += 1;
 			}
 		}
 	}
