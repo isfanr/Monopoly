@@ -1,7 +1,7 @@
 public class Utility extends Property { 
 	protected long utilityPrice;  		//Harga beli dari Utility
 	protected int numOfUtility;  		//Jumlah jenis Utility yang dimiliki 
-	protected int utilityStatus; 		//Status kepemilikan Lot; 0 jika tidak ada yang memiliki dan 1, 2, 3 dst untuk menunjukan dimiliki oleh player ke n
+	protected int utilityStatus; 		//Status kepemilikan Utility; 0 jika tidak ada yang memiliki dan 1, 2, 3 dst untuk menunjukan dimiliki oleh player ke n
 	
 	public Utility(int pos, long utilityPrice, int numOfUtility, int utilityStatus) { 
 		super(pos);
