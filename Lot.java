@@ -1,4 +1,4 @@
-public class Lot extends Tile { 
+public class Lot extends Property { 
 	protected long lotPrice;  		//Harga beli dari Lot
 	protected int numOfHouse;  		//Jumlah rumah yang dimiliki di Lot tersebut 
 	protected long housePrice; 		//Harga beli rumah pada Lot
