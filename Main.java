@@ -89,9 +89,36 @@ public class Main
 		{
 			
 		}
-
-		
-
-		
+			 
+	private ArrayList<Card> chance, communityChest;	
+	public Card drawChance()
+	{
+		Card c = chance.get(0);
+		chance.add(chance.remove(0));
+		return c;
+	}
+	public Card drawCommunityChest()
+	{
+		Card c = communityChest.get(0);
+		communityChest.add(communityChest.remove(0));
+		return c;
+	}
+	private void initCard()
+	{
+		chance = new ArrayList<>();
+		communityChest = new ArrayList<>();
+	}
+	private void giftCard()
+	{
+		//CommunityChest Card
+		communityChest.add(new Card("Community Chest", "Advance to Go(Collect $200)"));
+		communityChest.add(new Card("Community Chest", "Pay Hospital Fee of $100"));
+		communityChest.add(new Card("Community Chest", "Bank Error in your favor - collect $200"));
+        	communityChest.add(new Card("Community Chest", "Doctors's fees - Pay $50"));
+		//Chance Card
+		chance.add(new Card("Chance", "Go back 3 spaces"));
+		chance.add(new Card("Chance", "Pay Poor tax of $15"));
+		chance.add(new Card("Chance", "Bank pays you dividend of $50"));
+	}	
 	}
 }
