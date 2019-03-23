@@ -4,6 +4,11 @@ public class Space extends Tile
 	{
 		super(pos);
 	}
+	
+	public int getPos() { 
+		return (this.pos); 
+	}
+
 }
 
 //untuk Go, setiap lewat program utama player nambah uang
