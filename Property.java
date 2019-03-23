@@ -4,6 +4,11 @@ public class Property extends Tile
 	{
 		super(pos);
 	}
+	
+	public int getPos() { 
+		return (this.pos); 
+	}
+	
 }
 
 /*untuk Lot, Harga rent (tanpa bangunan) adalah ⅛ harga beli Lot. Jika memiliki sekomplek,
