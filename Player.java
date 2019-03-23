@@ -1,38 +1,25 @@
-public class Player { 
-	protected int playerNum; 
-	protected int playerPos; 
-	protected long money; 
+public class Player<N, P, M> { 
+	protected N playerNum; 
+	protected P playerPos; 
+	protected M money; 
 	public static numOfPlayer = 0; 
-	public count = 0;
 	
-	public Player(int playerNum, long money) {
+	public Player(N playerNum, P playerPos, M money) {
 		this.playerNum = playerNum; 
-		this.playerPos = 0; 
+		this.playerPos = playerPos;
 		this.money = money; 
 	}
 	
-	public int getPlayer(int playerNum) { 
+	public N getPlayer(N playerNum) { 
 		return (this.playerNum);
 	}
 	
-	public int getPlayerPos(int playerPos) { 
+	public P getPlayerPos(P playerPos) { 
 		return (this.playerPos); 
 	}
 	
-	public int getMoney(int money) { 
+	public M getMoney(M money) { 
 		return(this.money);
 	}
 	
-	public int movePlayer(int move) { 
-		for (int i = 0; i < move; i++) { 
-			if (this.playerPos < 39) { 
-				playerPos += 1;
-				count += 1; 
-			}
-			else { 
-				playerPos = 0; 
-				count += 1;
-			}
-		}
-	}
 }
