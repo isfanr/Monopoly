@@ -1,25 +1,29 @@
-public class Player<N, P, M> { 
-	protected N playerNum; 
-	protected P playerPos; 
-	protected M money; 
-	public static numOfPlayer = 0; 
+public class Player { 
+	int playerNum; 
+	int playerPos; 
+	int money; 
+	int jail;
+	int numOfPlayer = 0; 
 	
-	public Player(N playerNum, P playerPos, M money) {
+	public Player(int playerNum, int playerPos, int money, int jail) {
 		this.playerNum = playerNum; 
 		this.playerPos = playerPos;
 		this.money = money; 
 	}
 	
-	public N getPlayer(N playerNum) { 
+	public int getPlayer(){ 
 		return (this.playerNum);
 	}
 	
-	public P getPlayerPos(P playerPos) { 
+	public int getPos(){ 
 		return (this.playerPos); 
 	}
 	
-	public M getMoney(M money) { 
+	public int getMoney(){ 
 		return(this.money);
 	}
 	
+	public int getJail(){
+		return(this.jail);
+	}
 }

@@ -1,13 +1,13 @@
 public class Lot extends Property { 
-	protected long lotPrice;  		//Harga beli dari Lot
+	protected int lotPrice;  		//Harga beli dari Lot
 	protected int numOfHouse;  		//Jumlah rumah yang dimiliki di Lot tersebut 
-	protected long housePrice; 		//Harga beli rumah pada Lot
+	protected int housePrice; 		//Harga beli rumah pada Lot
 	protected int lotStatus; 		//Status kepemilikan Lot; 0 jika tidak ada yang memiliki dan 1, 2, 3 dst untuk menunjukan dimiliki oleh player ke n
 	protected int clusterStatus; 	//Status yang menunjukan apakah cluster dari Lot ini dimiliki oleh 1 orang; 0 jika tidak dan 1 jika iya 
 	protected int clusterNum; 
 	
-	public Lot(int pos, long lotPrice, long housePrice, int clusterNum) { 
-		super(pos);
+	public Lot(int pos, int lotPrice, int housePrice, int clusterNum) { 
+		super(pos,1);
 		this.lotPrice = lotPrice; 
 		this.numOfHouse = 0; 
 		this.housePrice = housePrice;
@@ -16,7 +16,7 @@ public class Lot extends Property {
 		this.clusterNum = clusterNum;
 	}
 	
-	public long getLotPrice() { 
+	public int getLotPrice() { 
 		return (this.lotPrice); 
 	}
 	
@@ -24,7 +24,7 @@ public class Lot extends Property {
 		return (this.numOfHouse);
 	}
 	
-	public long getHousePrice() { 
+	public int getHousePrice() { 
 		return (this.housePrice); 
 	}
 	
@@ -57,11 +57,6 @@ public class Lot extends Property {
 	}
 	
 }
-	
-	
-	
-	
-	
 	
 	
 	

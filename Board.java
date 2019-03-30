@@ -1,13 +1,13 @@
-public class Board<T, P> {
+public class Board<T> {
 	private Element first; 
-	private static int lastNum; 
+	private static int numOfElmt; 
 	
 	public class Element { 
 		private T box; 
-		private P post; 
+		private int post; 
 		private Element next; 
 		
-		public Element(T box, P post) { 
+		public Element(T box, int post) { 
 			this.box = box; 
 			this.post = post; 
 			this.next = null;
@@ -16,26 +16,26 @@ public class Board<T, P> {
 	
 	public Board() { 
 	this.first = null; 
-	this.lastNum = 0; 
-	}
-	
-	public Board(T box) { 
-	this.first = new Element(box, 0); 
-	this.lastNum = 0; 
+	this.numOfElmt = 0; 
 	}
 	
 	public void add(T box) { 
-		Element temp = this.first; 
-		for (int i = 0; i < this.lastNum; i++) { 
-			temp = temp.next; 
+		if (this.first == null) { 
+			this.first = new Element(box, 1); 
 		}
-		temp.next = new Element(box, this.lastNum + 1); 
-		lastNum++; 
+		else {
+			Element temp = this.first; 
+			for (int i = 0; i < this.numOfElmt - 1; i++) { 
+				temp = temp.next; 
+			}
+		temp.next = new Element(box, this.numOfElmt);
+		}
+	numOfElmt++; 
 	}
 	
-	public T get(P post) {
+	public T get(int post) {
 		Element temp = this.first; 
-		while (!temp.post.equals(post)) { 
+		for (int i = 0; i < post; i++) { 
 			temp = temp.next; 
 		}
 		return temp.box;		
