@@ -2,147 +2,22 @@ import java.util.Scanner;
 import java.util.Random;
 
 public class Main {
-	
-	//INISIASI BOARD//
-		
-	
-	public int rollDice()
-	{
-		Random rand = new Random();
-
-		//mendapatkan nilai [0 - 5]
-		int n = rand.nextInt(6);
-
-		// nambahin 1 ke nilai random [1 - 6]
-		int dadu = n+1;
-	
-		return(dadu);
-	}
-	
-	public void movePlayer(Player P, int jalan)
-	{
-		P.playerPos = ((P.playerPos + jalan)%40)-1;
-	} 
-		
-	public void buyLot(Lot L, Player P)
-	{ 
-		if (P.money > L.lotPrice)
-		{
-			P.money = P.money - L.lotPrice;
-			L.lotStatus = P.playerNum;
-		}
-		else
-		{
-			System.out.println("Ga cukup uang");
-		}
-	}
-	
-	public void payRentLot(Lot L, Player P)
-	{ 
-		//BELOM DIBUAT
-	}
-	
-	public void buyRailroad(Railroad R, Player P) 
-	{ 
-		if (P.money > R.railroadPrice)
-		{
-			P.money = P.money - R.railroadPrice;
-			R.railroadStatus = P.playerNum;
-		}
-		else
-		{
-			System.out.println("Ga cukup uang");
-		}
-	}
-
-	public void payRentRail(Railroad R, Player P)
-	{ 
-		int cek = R.railroadStatus;
-		int railCount = 0;
-		if (BandaraKemayoran.railroadStatus == cek)
-		{
-			railCount = railCount + 1;
-		}
-		if (TerminalBisSemarang.railroadStatus == cek)
-		{
-			railCount = railCount + 1;
-		}
-		if (StasiunPasarTuri.railroadStatus == cek)
-		{
-			railCount = railCount + 1;
-		}
-		if (PelabuhanBelawan.railroadStatus == cek)
-		{
-			railCount = railCount + 1;
-		}
-	
-		if (railCount == 1)
-		{
-			P.money = P.money - 1/8*R.railroadPrice;
-		}
-		else if (railCount == 2)
-		{
-			P.money = P.money - 1/4*R.railroadPrice;
-		}
-		else if (railCount == 3)
-		{
-			P.money = P.money - 1/2*R.railroadPrice;
-		}
-		else if (railCount == 4)
-		{
-			P.money = P.money - R.railroadPrice;
-		}
-	}
-	
-	public void buyUtility(Utility U, Player P) 
-	{ 
-		if (P.money > U.utilityPrice)
-		{
-			P.money = P.money - U.utilityPrice;
-			U.utilityStatus = P.playerNum;
-		}
-		else
-		{
-			System.out.println("Ga cukup uang");
-		}
-	}
-	
-	public void payRentUtil(Utility U, Player P)
-	{ 
-		int cek = U.utilityStatus;
-		int utilCount = 0;
-		if (Water.utilityStatus == cek)
-		{
-			utilCount = utilCount + 1;
-		}
-		if (Listrik.utilityStatus == cek)
-		{
-			utilCount = utilCount + 1;
-		}
-	
-		if (utilCount == 1)
-		{
-			P.money = P.money - 1/8*U.utilityPrice;
-		}
-		else if (utilCount == 2)
-		{
-			P.money = P.money - 1/2*U.utilityPrice;
-		}
-	}
-	
 	public static void main(String[] args) { 
 		
 		//INISIASI PLAYER
 		Player Player1 = new Player(1,0,1500,0); 
 		Player Player2 = new Player(2,0,1500,0);
 		
+		//INISIASI ARRAY PROPERTY
 		Lot[] lotList = new Lot[40];
 		Railroad[] rrList = new Railroad[40];
 		Utility[] utilList = new Utility[40]; 
 		Space[] spcList = new Space[40];
-		 
+		
+		//INISIASI BOARD
 		Board<Tile> board = new Board<Tile>();
 		
+		//INISIASI PROPERTY
 		Space go = new Space (0);
 		board.add(go);
 		spcList[0] = go; 
@@ -263,13 +138,17 @@ public class Main {
 		Lot Brastagi = new Lot(39, 400, 200, 8);
 		board.add(Brastagi);
 		lotList[39] = Brastagi;
-			
+		
+		//SCANNER	
 		Scanner sc = new Scanner(System.in); 
 		
+		//INISIASI MULAI
 		int Playing = 1; 
 		String cmd = sc.next();
 		Player tempPlayer = new Player(0,0,0,0);
-		boolean Selesai = false; 
+		boolean Selesai = false;
+		
+		//LOOPING PROGRAM 
 		while (!(cmd.equals("END")) && !Selesai ) { 
 			if (Playing == 1) { 
 				tempPlayer = Player1; 
@@ -280,15 +159,20 @@ public class Main {
 			
 			//KOCOK DADU
 			int sementara = tempPlayer.playerPos;
-			int dadu1 = rollDice();
-			int dadu2 = rollDice();
+			Random rand = new Random();
+			//mendapatkan nilai [0 - 5]
+			int n = rand.nextInt(6);
+			int m = rand.nextInt(6);
+			// nambahin 1 ke nilai random [1 - 6]
+			int dadu1 = n+1;
+			int dadu2 = m+1;
 			System.out.println("Dadu yang didapat : " + dadu1 + " " + dadu2); 
 			int jalan = dadu1 + dadu2;
 			
 			//PLAYER JALAN / PLAYER DI JAIL
 			if (tempPlayer.jail == 0)
 			{
-				movePlayer(tempPlayer, jalan);
+				tempPlayer.playerPos = ((tempPlayer.playerPos + jalan)%40)-1;
 				if ((tempPlayer.playerPos - sementara) < 0)//KALO LEWAT GO DAPET 200
 				{
 					tempPlayer.money = tempPlayer.money + 200;
@@ -297,14 +181,14 @@ public class Main {
 			else if (tempPlayer.jail == 3)
 			{
 				tempPlayer.jail = 0;
-				movePlayer(tempPlayer, jalan);
+				tempPlayer.playerPos = ((tempPlayer.playerPos + jalan)%40)-1;
 			}
 			else //tempPlayer.jail != 0/3
 			{
 				if (dadu1 == dadu2)
 				{
 					tempPlayer.jail = 0;
-					movePlayer(tempPlayer, jalan);
+					tempPlayer.playerPos = ((tempPlayer.playerPos + jalan)%40)-1;
 				}
 				else //dadu ga sama
 				{
@@ -317,7 +201,7 @@ public class Main {
 						{
 							tempPlayer.jail = 0;
 							tempPlayer.money = tempPlayer.money - 50;
-							movePlayer(tempPlayer, jalan);
+							tempPlayer.playerPos = ((tempPlayer.playerPos + jalan)%40)-1;
 						}
 						else
 						{
@@ -340,17 +224,25 @@ public class Main {
 					System.out.print("Command : "); 
 					cmd = sc.next(); 
 					if (cmd.equals("BUY")) { 
-						buyLot(tempL, tempPlayer);
+						if (tempPlayer.money > tempL.lotPrice)
+						{
+							tempPlayer.money = tempPlayer.money - tempL.lotPrice;
+							tempL.lotStatus = tempPlayer.playerNum;
+						}
+						else
+						{
+							System.out.println("Ga cukup uang");
+						}
 					}
 					if (cmd.equals("LEAVE")) {
 						//do nothing 
 					} 
 				}
-				else if (tempL.getLotStatus == Playing) { //PUNYA SENDIRI
+				else if (tempL.getLotStatus() == Playing) { //PUNYA SENDIRI
 					//BELOM DIBUAT SABAR
 				}
 				else { //PUNYA ORANG
-					payRentLot(tempL, tempPlayer);
+					//BELOM DIBUAT SABAR
 				}
 			}
 			
@@ -361,17 +253,59 @@ public class Main {
 					System.out.print("Command : "); 
 					cmd = sc.next(); 
 					if (cmd.equals("BUY")) { 
-						buyRailroad(tempR, tempPlayer);
+						if (tempPlayer.money > tempR.railroadPrice)
+						{
+							tempPlayer.money = tempPlayer.money - tempR.railroadPrice;
+							tempR.railroadStatus = tempPlayer.playerNum;
+						}
+						else
+						{
+							System.out.println("Ga cukup uang");
+						}
 					}
 					if (cmd.equals("LEAVE")) { 
 						//do nothing
 					} 
 				}
-				else if (tempR.getRailroadStatus == Playing) { //PUNYA SENDIRI
+				else if (tempR.getRailroadStatus() == Playing) { //PUNYA SENDIRI
 					//do nothing
 				}
 				else { //PUNYA ORANG
-					payRentRail(tempR, tempPlayer); 
+					int cekr = tempR.railroadStatus;
+					int railCount = 0;
+					if (rrList[5].railroadStatus == cekr)
+					{
+						railCount = railCount + 1;
+					}
+					if (rrList[15].railroadStatus == cekr)
+					{
+						railCount = railCount + 1;
+					}
+					if (rrList[25].railroadStatus == cekr)
+					{
+						railCount = railCount + 1;
+					}
+					if (rrList[35].railroadStatus == cekr)
+					{
+						railCount = railCount + 1;
+					}
+				
+					if (railCount == 1)
+					{
+						tempPlayer.money = tempPlayer.money - 1/8*tempR.railroadPrice;
+					}
+					else if (railCount == 2)
+					{
+						tempPlayer.money = tempPlayer.money - 1/4*tempR.railroadPrice;
+					}
+					else if (railCount == 3)
+					{
+						tempPlayer.money = tempPlayer.money - 1/2*tempR.railroadPrice;
+					}
+					else if (railCount == 4)
+					{
+						tempPlayer.money = tempPlayer.money - tempR.railroadPrice;
+					}
 				}	
 			}
 			
@@ -382,17 +316,43 @@ public class Main {
 					System.out.print("Command : "); 
 					cmd = sc.next(); 
 					if (cmd.equals("BUY")) { 
-						buyUtility(tempU, tempPlayer);
+						if (tempPlayer.money > tempU.utilityPrice)
+						{
+							tempPlayer.money = tempPlayer.money - tempU.utilityPrice;
+							tempU.utilityStatus = tempPlayer.playerNum;
+						}
+						else
+						{
+							System.out.println("Ga cukup uang");
+						}
 					}
 					else if (cmd.equals("LEAVE")) {
 						//do nothing
 					} 
 				}
-				else if (tempU.getUtilityStatus == Playing) { //PUNYA SENDIRI
+				else if (tempU.getUtilityStatus() == Playing) { //PUNYA SENDIRI
 					//do nothing
 				}
 				else { //PUNYA ORANG
-					payRentUtil(tempU, tempPlayer); 
+					int ceku = tempU.utilityStatus;
+					int utilCount = 0;
+					if (utilList[12].utilityStatus == ceku)
+					{
+						utilCount = utilCount + 1;
+					}
+					if (utilList[28].utilityStatus == ceku)
+					{
+						utilCount = utilCount + 1;
+					}
+				
+					if (utilCount == 1)
+					{
+						tempPlayer.money = tempPlayer.money - 1/8*tempU.utilityPrice;
+					}
+					else if (utilCount == 2)
+					{
+						tempPlayer.money = tempPlayer.money - 1/2*tempU.utilityPrice;
+					}
 				}
 			}
 			else if (board.get(tempPlayer.getPos()).tileType == 4) { //SPACE
