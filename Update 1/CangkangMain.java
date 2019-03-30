@@ -19,12 +19,21 @@ public class Main {
 
 	}
 	
-	public void movePlayer (Player P) { 
-		//fungsi untuk menggerakan player
-	}
-	
+		
 	public void buyLot(Lot L) { 
-		//fungsi untuk membeli lot 
+	if(//action beli)
+		{
+			if (money > lotPrice)
+			{
+				money = money - lotPrice;
+			}
+			else
+			{
+				System.out.println("Ga cukup uang");
+			}
+		}
+	else //action skip
+	{}
 	} 
 	
 	public void buyRailroad(Railroad R) { 
@@ -132,7 +141,41 @@ public class Main {
 	} 
 	
 	public void payRentLot() { 
-		//prosedur untuk membayar sewa lot dari P1 kepada P2 sebagai pemilik property
+	if (lotStatus != playerNum)
+	{
+		if (clusterStatus != 1)
+		{
+			if ((clusterNum == 1) || (clusterNum == 8))
+			{
+				if (clusterStatus == 2)
+				{
+					if (numOfHouse == 0)
+					{
+						 money = money - 1/4*lotPrice;
+					}
+					else if (numOfHouse == 1)
+					{
+						money = money - 1/2*lotPrice;
+					}
+					else if (numOfHouse == 2)
+					{
+						money = money - lotPrice;
+					}
+					else if (numOfHouse == 3)
+					{
+						money = money = 2*lotPrice;
+					}
+					else if (numOfHouse == 4)
+					{
+						money = money = 4*lotPrice;
+					}
+				}
+			}
+			else
+			{
+				money = money - 1/8*lotPrice;
+			}
+		}
 	}
 	
 	
