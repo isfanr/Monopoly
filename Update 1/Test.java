@@ -19,7 +19,7 @@ public class Test {
             public void run() {
                 while (true) {
                     try {
-			if (counter == 31) {
+			if (counter == 30) {
                             System.out.println("Ganti pemain");
                             counter = 1;
                             run();
