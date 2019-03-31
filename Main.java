@@ -1,12 +1,21 @@
 import java.util.Scanner;
 import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.List;
+import java.util.ArrayList;
 
 public class Main {
+	static int counter = 1;
+	static Timer timer;
+	
 	public static void main(String[] args) { 
 		
 		//INISIASI PLAYER
 		Player Player1 = new Player(1,0,1500,0); 
 		Player Player2 = new Player(2,0,1500,0);
+		
+		//INISIASI PROPERTY
 		
 		//INISIASI ARRAY PROPERTY
 		Lot[] lotList = new Lot[40];
@@ -21,6 +30,7 @@ public class Main {
 		Space go = new Space (0);
 		board.add(go);
 		spcList[0] = go; 
+		
 		Lot Monas = new Lot (1, 60, 50, 1);
 		board.add(Monas);
 		lotList[1] = Monas;
@@ -139,22 +149,30 @@ public class Main {
 		board.add(Brastagi);
 		lotList[39] = Brastagi;
 		
-		//SCANNER	
-		Scanner sc = new Scanner(System.in); 
-		
 		//INISIASI MULAI
 		int Playing = 1; 
-		String cmd = sc.next();
 		Player tempPlayer = new Player(0,0,0,0);
+		Board<Property> tempList = new Board<Property>();
 		boolean Selesai = false;
 		
+		//SCANNER	
+		Scanner sc = new Scanner(System.in);
+		String cmd = sc.next();
+		
 		//LOOPING PROGRAM 
+		if (cmd.equals("MULAI")){
 		while (!(cmd.equals("END")) && !Selesai ) { 
 			if (Playing == 1) { 
-				tempPlayer = Player1; 
+				tempPlayer = Player1;
+				System.out.println("Giliran player 1");
+				System.out.println("Sisa uang: " + tempPlayer.money); 
+				System.out.println("Posisi sebelumnya: " + tempPlayer.playerPos);
 			}
 			else if (Playing == 2) { 
-				tempPlayer = Player2; 
+				tempPlayer = Player2;
+				System.out.println("Giliran player 2");
+				System.out.println("Sisa uang: " + tempPlayer.money);
+				System.out.println("Posisi sebelumnya: " + tempPlayer.playerPos);
 			}
 			
 			//KOCOK DADU
@@ -167,21 +185,56 @@ public class Main {
 			int dadu1 = n+1;
 			int dadu2 = m+1;
 			System.out.println("Dadu yang didapat : " + dadu1 + " " + dadu2); 
-			int jalan = dadu1 + dadu2;
+			int jalan = dadu1 + dadu2 + 1;
 			
+			TimerTask timerTask = new TimerTask()
+			{
+				public void run() 
+				{
+					counter++;           
+				}
+			};
+			Thread t = new Thread(new Runnable() 
+			{
+				public void run() 
+				{
+					while (true) 
+					{
+						try 
+						{														
+							if ((counter == 30)) 
+							{
+								counter = 0;                            
+								System.out.println("Ganti pemain");								
+							}
+							Thread.sleep(1000);
+						} 
+						catch (InterruptedException ex) 
+						{}
+					}
+				}
+
+			});
+			timer = new Timer("Timer");
+			timer.scheduleAtFixedRate(timerTask, 0, 1000);
+			t.start();
+				
 			//PLAYER JALAN / PLAYER DI JAIL
 			if (tempPlayer.jail == 0)
 			{
 				tempPlayer.playerPos = ((tempPlayer.playerPos + jalan)%40)-1;
+				System.out.println("Posisi sekarang: " + tempPlayer.playerPos);
 				if ((tempPlayer.playerPos - sementara) < 0)//KALO LEWAT GO DAPET 200
 				{
 					tempPlayer.money = tempPlayer.money + 200;
+					System.out.println("Selamat mendapat 200");
 				}
 			}
 			else if (tempPlayer.jail == 3)
 			{
 				tempPlayer.jail = 0;
 				tempPlayer.playerPos = ((tempPlayer.playerPos + jalan)%40)-1;
+				System.out.println("Posisi sekarang: " + tempPlayer.playerPos);
 			}
 			else //tempPlayer.jail != 0/3
 			{
@@ -189,6 +242,7 @@ public class Main {
 				{
 					tempPlayer.jail = 0;
 					tempPlayer.playerPos = ((tempPlayer.playerPos + jalan)%40)-1;
+					System.out.println("Posisi sekarang: " + tempPlayer.playerPos);
 				}
 				else //dadu ga sama
 				{
@@ -202,16 +256,19 @@ public class Main {
 							tempPlayer.jail = 0;
 							tempPlayer.money = tempPlayer.money - 50;
 							tempPlayer.playerPos = ((tempPlayer.playerPos + jalan)%40)-1;
+							System.out.println("Posisi sekarang: " + tempPlayer.playerPos);
 						}
 						else
 						{
 							System.out.println("Uang tidak cukup.");
 							tempPlayer.jail = tempPlayer.jail + 1;
+							System.out.println("Posisi sekarang: " + tempPlayer.playerPos);
 						}
 					}
 					else if (cmd.equals("GAK"))
 					{
 						tempPlayer.jail = tempPlayer.jail + 1;
+						System.out.println("Yaudah");
 					}	
 				}
 			}
@@ -228,6 +285,7 @@ public class Main {
 						{
 							tempPlayer.money = tempPlayer.money - tempL.lotPrice;
 							tempL.lotStatus = tempPlayer.playerNum;
+							System.out.println("Pembelian lot " + tempPlayer.getPos() + " berhasil");
 						}
 						else
 						{
@@ -235,21 +293,758 @@ public class Main {
 						}
 					}
 					if (cmd.equals("LEAVE")) {
-						//do nothing 
+						System.out.println("Yaudah");
 					} 
 				}
 				else if (tempL.getLotStatus() == Playing) { //PUNYA SENDIRI
-					//BELOM DIBUAT SABAR
+					int cekRumah = 0;
+					if (tempL.clusterNum == 1)
+					{
+						if (lotList[1].lotStatus == tempL.lotStatus)
+						{
+							cekRumah = cekRumah + 1;
+						}
+						if (lotList[3].lotStatus == tempL.lotStatus)
+						{
+							cekRumah = cekRumah + 1;
+						}
+						if (cekRumah == 2)
+						{
+							System.out.println("Mau beli rumah?"); 
+							System.out.print("Command : "); 
+							cmd = sc.next(); 
+							if (cmd.equals("RUMAH"))
+							{
+								if(tempPlayer.money > tempL.housePrice)
+								{
+									if(tempL.numOfHouse < 4)
+									{
+										tempPlayer.money = tempPlayer.money - 50;
+										tempL.numOfHouse = tempL.numOfHouse + 1;
+										System.out.println("Pembelian rumah berhasil");
+									}
+									else
+									{
+										System.out.println("Rumah sudah maks");
+									}
+								}
+								else
+								{
+									System.out.println("Uang gak cukup"); 
+								}
+							}
+							else if (cmd.equals("TIDAK"))
+							{
+								System.out.println("Yaudah");
+							}
+						}
+						else
+						{
+							System.out.println("Belum bisa beli rumah"); 
+						}							
+					}
+					else if (tempL.clusterNum == 2)
+					{
+						if (lotList[6].lotStatus == tempL.lotStatus)
+						{
+							cekRumah = cekRumah + 1;
+						}
+						if (lotList[8].lotStatus == tempL.lotStatus)
+						{
+							cekRumah = cekRumah + 1;
+						}
+						if (lotList[9].lotStatus == tempL.lotStatus)
+						{
+							cekRumah = cekRumah + 1;
+						}
+						if (cekRumah == 3)
+						{
+							System.out.println("Mau beli rumah?"); 
+							System.out.print("Command : "); 
+							cmd = sc.next(); 
+							if (cmd.equals("RUMAH"))
+							{
+								if(tempPlayer.money > tempL.housePrice)
+								{
+									if(tempL.numOfHouse < 4)
+									{
+										tempPlayer.money = tempPlayer.money - 50;
+										tempL.numOfHouse = tempL.numOfHouse + 1;
+										System.out.println("Pembelian rumah berhasil");
+									}
+									else
+									{
+										System.out.println("Rumah sudah maks");
+									}
+								}
+								else
+								{
+									System.out.println("Uang gak cukup"); 
+								}
+							}
+							else if (cmd.equals("TIDAK"))
+							{
+								System.out.println("Yaudah");
+							}
+						}
+						else
+						{
+							System.out.println("Belum bisa beli rumah"); 
+						}				
+					}
+					else if (tempL.clusterNum == 3)
+					{
+						if (lotList[11].lotStatus == tempL.lotStatus)
+						{
+							cekRumah = cekRumah + 1;
+						}
+						if (lotList[13].lotStatus == tempL.lotStatus)
+						{
+							cekRumah = cekRumah + 1;
+						}
+						if (lotList[14].lotStatus == tempL.lotStatus)
+						{
+							cekRumah = cekRumah + 1;
+						}
+						if (cekRumah == 3)
+						{
+							System.out.println("Mau beli rumah?"); 
+							System.out.print("Command : "); 
+							cmd = sc.next(); 
+							if (cmd.equals("RUMAH"))
+							{
+								if(tempPlayer.money > tempL.housePrice)
+								{
+									if(tempL.numOfHouse < 4)
+									{
+										tempPlayer.money = tempPlayer.money - 100;
+										tempL.numOfHouse = tempL.numOfHouse + 1;
+										System.out.println("Pembelian rumah berhasil");
+									}
+									else
+									{
+										System.out.println("Rumah sudah maks");
+									}
+								}
+								else
+								{
+									System.out.println("Uang gak cukup"); 
+								}
+							}
+							else if (cmd.equals("TIDAK"))
+							{
+								System.out.println("Yaudah");
+							}
+						}
+						else
+						{
+							System.out.println("Belum bisa beli rumah"); 
+						}
+					}
+					else if (tempL.clusterNum == 4)
+					{
+						if (lotList[16].lotStatus == tempL.lotStatus)
+						{
+							cekRumah = cekRumah + 1;
+						}
+						if (lotList[18].lotStatus == tempL.lotStatus)
+						{
+							cekRumah = cekRumah + 1;
+						}
+						if (lotList[19].lotStatus == tempL.lotStatus)
+						{
+							cekRumah = cekRumah + 1;
+						}
+						if (cekRumah == 3)
+						{
+							System.out.println("Mau beli rumah?"); 
+							System.out.print("Command : "); 
+							cmd = sc.next(); 
+							if (cmd.equals("RUMAH"))
+							{
+								if(tempPlayer.money > tempL.housePrice)
+								{
+									if(tempL.numOfHouse < 4)
+									{
+										tempPlayer.money = tempPlayer.money - 100;
+										tempL.numOfHouse = tempL.numOfHouse + 1;
+										System.out.println("Pembelian rumah berhasil");
+									}
+									else
+									{
+										System.out.println("Rumah sudah maks");
+									}
+								}
+								else
+								{
+									System.out.println("Uang gak cukup"); 
+								}
+							}
+							else if (cmd.equals("TIDAK"))
+							{
+								System.out.println("Yaudah");
+							}
+						}
+						else
+						{
+							System.out.println("Belum bisa beli rumah"); 
+						}
+					}
+					else if (tempL.clusterNum == 5)
+					{
+						if (lotList[21].lotStatus == tempL.lotStatus)
+						{
+							cekRumah = cekRumah + 1;
+						}
+						if (lotList[23].lotStatus == tempL.lotStatus)
+						{
+							cekRumah = cekRumah + 1;
+						}
+						if (lotList[24].lotStatus == tempL.lotStatus)
+						{
+							cekRumah = cekRumah + 1;
+						}
+						if (cekRumah == 3)
+						{
+							System.out.println("Mau beli rumah?"); 
+							System.out.print("Command : "); 
+							cmd = sc.next(); 
+							if (cmd.equals("RUMAH"))
+							{
+								if(tempPlayer.money > tempL.housePrice)
+								{
+									if(tempL.numOfHouse < 4)
+									{
+										tempPlayer.money = tempPlayer.money - 150;
+										tempL.numOfHouse = tempL.numOfHouse + 1;
+										System.out.println("Pembelian rumah berhasil");
+									}
+									else
+									{
+										System.out.println("Rumah sudah maks");
+									}
+								}
+								else
+								{
+									System.out.println("Uang gak cukup"); 
+								}
+							}
+							else if (cmd.equals("TIDAK"))
+							{
+								System.out.println("Yaudah");
+							}
+						}
+						else
+						{
+							System.out.println("Belum bisa beli rumah"); 
+						}
+					}
+					else if (tempL.clusterNum == 6)
+					{
+						if (lotList[26].lotStatus == tempL.lotStatus)
+						{
+							cekRumah = cekRumah + 1;
+						}
+						if (lotList[27].lotStatus == tempL.lotStatus)
+						{
+							cekRumah = cekRumah + 1;
+						}
+						if (lotList[29].lotStatus == tempL.lotStatus)
+						{
+							cekRumah = cekRumah + 1;
+						}
+						if (cekRumah == 3)
+						{
+							System.out.println("Mau beli rumah?"); 
+							System.out.print("Command : "); 
+							cmd = sc.next(); 
+							if (cmd.equals("RUMAH"))
+							{
+								if(tempPlayer.money > tempL.housePrice)
+								{
+									if(tempL.numOfHouse < 4)
+									{
+										tempPlayer.money = tempPlayer.money - 150;
+										tempL.numOfHouse = tempL.numOfHouse + 1;
+										System.out.println("Pembelian rumah berhasil");
+									}
+									else
+									{
+										System.out.println("Rumah sudah maks");
+									}
+								}
+								else
+								{
+									System.out.println("Uang gak cukup"); 
+								}
+							}
+							else if (cmd.equals("TIDAK"))
+							{
+								System.out.println("Yaudah");
+							}
+						}
+						else
+						{
+							System.out.println("Belum bisa beli rumah"); 
+						}
+					}
+					else if (tempL.clusterNum == 7)
+					{
+						if (lotList[31].lotStatus == tempL.lotStatus)
+						{
+							cekRumah = cekRumah + 1;
+						}
+						if (lotList[32].lotStatus == tempL.lotStatus)
+						{
+							cekRumah = cekRumah + 1;
+						}
+						if (lotList[34].lotStatus == tempL.lotStatus)
+						{
+							cekRumah = cekRumah + 1;
+						}
+						if (cekRumah == 3)
+						{
+							System.out.println("Mau beli rumah?"); 
+							System.out.print("Command : "); 
+							cmd = sc.next(); 
+							if (cmd.equals("RUMAH"))
+							{
+								if(tempPlayer.money > tempL.housePrice)
+								{
+									if(tempL.numOfHouse < 4)
+									{
+										tempPlayer.money = tempPlayer.money - 200;
+										tempL.numOfHouse = tempL.numOfHouse + 1;
+										System.out.println("Pembelian rumah berhasil");
+									}
+									else
+									{
+										System.out.println("Rumah sudah maks");
+									}
+								}
+								else
+								{
+									System.out.println("Uang gak cukup"); 
+								}
+							}
+							else if (cmd.equals("TIDAK"))
+							{
+								System.out.println("Yaudah");
+							}
+						}
+						else
+						{
+							System.out.println("Belum bisa beli rumah"); 
+						}
+					}
+					else if (tempL.clusterNum == 8)
+					{
+						if (lotList[37].lotStatus == tempL.lotStatus)
+						{
+							cekRumah = cekRumah + 1;
+						}
+						if (lotList[39].lotStatus == tempL.lotStatus)
+						{
+							cekRumah = cekRumah + 1;
+						}
+						if (cekRumah == 2)
+						{
+							System.out.println("Mau beli rumah?"); 
+							System.out.print("Command : "); 
+							cmd = sc.next(); 
+							if (cmd.equals("RUMAH"))
+							{
+								if(tempPlayer.money > tempL.housePrice)
+								{
+									if(tempL.numOfHouse < 4)
+									{
+										tempPlayer.money = tempPlayer.money - 200;
+										tempL.numOfHouse = tempL.numOfHouse + 1;
+										System.out.println("Pembelian rumah berhasil");
+									}
+									else
+									{
+										System.out.println("Rumah sudah maks");
+									}
+								}
+								else
+								{
+									System.out.println("Uang gak cukup"); 
+								}
+							}
+							else if (cmd.equals("TIDAK"))
+							{
+								System.out.println("Yaudah");
+							}
+						}
+						else
+						{
+							System.out.println("Belum bisa beli rumah"); 
+						}
+					}
 				}
 				else { //PUNYA ORANG
-					//BELOM DIBUAT SABAR
+					System.out.println("Yah kena punya orang");
+					int cekLot = 0;
+					if (tempL.clusterNum == 1)
+					{
+						//CEK CLUSTER
+						if (lotList[1].lotStatus == tempL.lotStatus)
+						{
+							cekLot = cekLot + 1;
+						}
+						if (lotList[3].lotStatus == tempL.lotStatus)
+						{
+							cekLot = cekLot + 1;
+						}
+						
+						//BAYAR
+						if(cekLot == 2)
+						{
+							if (tempL.numOfHouse == 0)
+							{
+								tempPlayer.money = tempPlayer.money - 1/4*tempL.lotPrice;
+							}
+							else if (tempL.numOfHouse == 1)
+							{
+								tempPlayer.money = tempPlayer.money - 1/2*tempL.lotPrice;
+							}
+							else if (tempL.numOfHouse == 2)
+							{
+								tempPlayer.money = tempPlayer.money - tempL.lotPrice;
+							}
+							else if (tempL.numOfHouse == 3)
+							{
+								tempPlayer.money = tempPlayer.money - 2*tempL.lotPrice;
+							}
+							else if (tempL.numOfHouse == 4)
+							{
+								tempPlayer.money = tempPlayer.money - 4*tempL.lotPrice;
+							}
+						}
+						else
+						{
+							tempPlayer.money = tempPlayer.money - 1/8*tempL.lotPrice;
+						}
+					}
+					else if (tempL.clusterNum == 2)
+					{
+						//CEK CLUSTER
+						if (lotList[6].lotStatus == tempL.lotStatus)
+						{
+							cekLot = cekLot + 1;
+						}
+						if (lotList[8].lotStatus == tempL.lotStatus)
+						{
+							cekLot = cekLot + 1;
+						}
+						if (lotList[9].lotStatus == tempL.lotStatus)
+						{
+							cekLot = cekLot + 1;
+						}
+						
+						//BAYAR
+						if(cekLot == 3)
+						{
+							if (tempL.numOfHouse == 0)
+							{
+								 tempPlayer.money = tempPlayer.money - 1/4*tempL.lotPrice;
+							}
+							else if (tempL.numOfHouse == 1)
+							{
+								tempPlayer.money = tempPlayer.money - 1/2*tempL.lotPrice;
+							}
+							else if (tempL.numOfHouse == 2)
+							{
+								tempPlayer.money = tempPlayer.money - tempL.lotPrice;
+							}
+							else if (tempL.numOfHouse == 3)
+							{
+								tempPlayer.money = tempPlayer.money - 2*tempL.lotPrice;
+							}
+							else if (tempL.numOfHouse == 4)
+							{
+								tempPlayer.money = tempPlayer.money - 4*tempL.lotPrice;
+							}
+						}
+						else
+						{
+							tempPlayer.money = tempPlayer.money - 1/8*tempL.lotPrice;
+						}
+					}
+					else if (tempL.clusterNum == 3)
+					{
+						//CEK CLUSTER
+						if (lotList[11].lotStatus == tempL.lotStatus)
+						{
+							cekLot = cekLot + 1;
+						}
+						if (lotList[13].lotStatus == tempL.lotStatus)
+						{
+							cekLot = cekLot + 1;
+						}
+						if (lotList[14].lotStatus == tempL.lotStatus)
+						{
+							cekLot = cekLot + 1;
+						}
+						
+						//BAYAR
+						if(cekLot == 3)
+						{
+							if (tempL.numOfHouse == 0)
+							{
+								 tempPlayer.money = tempPlayer.money - 1/4*tempL.lotPrice;
+							}
+							else if (tempL.numOfHouse == 1)
+							{
+								tempPlayer.money = tempPlayer.money - 1/2*tempL.lotPrice;
+							}
+							else if (tempL.numOfHouse == 2)
+							{
+								tempPlayer.money = tempPlayer.money - tempL.lotPrice;
+							}
+							else if (tempL.numOfHouse == 3)
+							{
+								tempPlayer.money = tempPlayer.money - 2*tempL.lotPrice;
+							}
+							else if (tempL.numOfHouse == 4)
+							{
+								tempPlayer.money = tempPlayer.money - 4*tempL.lotPrice;
+							}
+						}
+						else
+						{
+							tempPlayer.money = tempPlayer.money - 1/8*tempL.lotPrice;
+						}
+					}
+					else if (tempL.clusterNum == 4)
+					{
+						//CEK CLUSTER
+						if (lotList[16].lotStatus == tempL.lotStatus)
+						{
+							cekLot = cekLot + 1;
+						}
+						if (lotList[18].lotStatus == tempL.lotStatus)
+						{
+							cekLot = cekLot + 1;
+						}
+						if (lotList[19].lotStatus == tempL.lotStatus)
+						{
+							cekLot = cekLot + 1;
+						}
+						
+						//BAYAR
+						if(cekLot == 3)
+						{
+							if (tempL.numOfHouse == 0)
+							{
+								 tempPlayer.money = tempPlayer.money - 1/4*tempL.lotPrice;
+							}
+							else if (tempL.numOfHouse == 1)
+							{
+								tempPlayer.money = tempPlayer.money - 1/2*tempL.lotPrice;
+							}
+							else if (tempL.numOfHouse == 2)
+							{
+								tempPlayer.money = tempPlayer.money - tempL.lotPrice;
+							}
+							else if (tempL.numOfHouse == 3)
+							{
+								tempPlayer.money = tempPlayer.money - 2*tempL.lotPrice;
+							}
+							else if (tempL.numOfHouse == 4)
+							{
+								tempPlayer.money = tempPlayer.money - 4*tempL.lotPrice;
+							}
+						}
+						else
+						{
+							tempPlayer.money = tempPlayer.money - 1/8*tempL.lotPrice;
+						}
+					}
+					else if (tempL.clusterNum == 5)
+					{
+						//CEK CLUSTER
+						if (lotList[21].lotStatus == tempL.lotStatus)
+						{
+							cekLot = cekLot + 1;
+						}
+						if (lotList[23].lotStatus == tempL.lotStatus)
+						{
+							cekLot = cekLot + 1;
+						}
+						if (lotList[24].lotStatus == tempL.lotStatus)
+						{
+							cekLot = cekLot + 1;
+						}
+						
+						//BAYAR
+						if(cekLot == 3)
+						{
+							if (tempL.numOfHouse == 0)
+							{
+								 tempPlayer.money = tempPlayer.money - 1/4*tempL.lotPrice;
+							}
+							else if (tempL.numOfHouse == 1)
+							{
+								tempPlayer.money = tempPlayer.money - 1/2*tempL.lotPrice;
+							}
+							else if (tempL.numOfHouse == 2)
+							{
+								tempPlayer.money = tempPlayer.money - tempL.lotPrice;
+							}
+							else if (tempL.numOfHouse == 3)
+							{
+								tempPlayer.money = tempPlayer.money - 2*tempL.lotPrice;
+							}
+							else if (tempL.numOfHouse == 4)
+							{
+								tempPlayer.money = tempPlayer.money - 4*tempL.lotPrice;
+							}
+						}
+						else
+						{
+							tempPlayer.money = tempPlayer.money - 1/8*tempL.lotPrice;
+						}
+					}
+					else if (tempL.clusterNum == 6)
+					{
+						//CEK CLUSTER
+						if (lotList[26].lotStatus == tempL.lotStatus)
+						{
+							cekLot = cekLot + 1;
+						}
+						if (lotList[27].lotStatus == tempL.lotStatus)
+						{
+							cekLot = cekLot + 1;
+						}
+						if (lotList[29].lotStatus == tempL.lotStatus)
+						{
+							cekLot = cekLot + 1;
+						}
+						
+						//BAYAR
+						if(cekLot == 3)
+						{
+							if (tempL.numOfHouse == 0)
+							{
+								 tempPlayer.money = tempPlayer.money - 1/4*tempL.lotPrice;
+							}
+							else if (tempL.numOfHouse == 1)
+							{
+								tempPlayer.money = tempPlayer.money - 1/2*tempL.lotPrice;
+							}
+							else if (tempL.numOfHouse == 2)
+							{
+								tempPlayer.money = tempPlayer.money - tempL.lotPrice;
+							}
+							else if (tempL.numOfHouse == 3)
+							{
+								tempPlayer.money = tempPlayer.money - 2*tempL.lotPrice;
+							}
+							else if (tempL.numOfHouse == 4)
+							{
+								tempPlayer.money = tempPlayer.money - 4*tempL.lotPrice;
+							}
+						}
+						else
+						{
+							tempPlayer.money = tempPlayer.money - 1/8*tempL.lotPrice;
+						}
+					}
+					else if (tempL.clusterNum == 7)
+					{
+						//CEK CLUSTER
+						if (lotList[31].lotStatus == tempL.lotStatus)
+						{
+							cekLot = cekLot + 1;
+						}
+						if (lotList[32].lotStatus == tempL.lotStatus)
+						{
+							cekLot = cekLot + 1;
+						}
+						if (lotList[34].lotStatus == tempL.lotStatus)
+						{
+							cekLot = cekLot + 1;
+						}
+						
+						//BAYAR
+						if(cekLot == 3)
+						{
+							if (tempL.numOfHouse == 0)
+							{
+								 tempPlayer.money = tempPlayer.money - 1/4*tempL.lotPrice;
+							}
+							else if (tempL.numOfHouse == 1)
+							{
+								tempPlayer.money = tempPlayer.money - 1/2*tempL.lotPrice;
+							}
+							else if (tempL.numOfHouse == 2)
+							{
+								tempPlayer.money = tempPlayer.money - tempL.lotPrice;
+							}
+							else if (tempL.numOfHouse == 3)
+							{
+								tempPlayer.money = tempPlayer.money - 2*tempL.lotPrice;
+							}
+							else if (tempL.numOfHouse == 4)
+							{
+								tempPlayer.money = tempPlayer.money - 4*tempL.lotPrice;
+							}
+						}
+						else
+						{
+							tempPlayer.money = tempPlayer.money - 1/8*tempL.lotPrice;
+						}
+					}
+					else if (tempL.clusterNum == 8)
+					{
+						//CEK CLUSTER
+						if (lotList[37].lotStatus == tempL.lotStatus)
+						{
+							cekLot = cekLot + 1;
+						}
+						if (lotList[39].lotStatus == tempL.lotStatus)
+						{
+							cekLot = cekLot + 1;
+						}
+						
+						//BAYAR
+						if(cekLot == 2)
+						{
+							if (tempL.numOfHouse == 0)
+							{
+								 tempPlayer.money = tempPlayer.money - 1/4*tempL.lotPrice;
+							}
+							else if (tempL.numOfHouse == 1)
+							{
+								tempPlayer.money = tempPlayer.money - 1/2*tempL.lotPrice;
+							}
+							else if (tempL.numOfHouse == 2)
+							{
+								tempPlayer.money = tempPlayer.money - tempL.lotPrice;
+							}
+							else if (tempL.numOfHouse == 3)
+							{
+								tempPlayer.money = tempPlayer.money - 2*tempL.lotPrice;
+							}
+							else if (tempL.numOfHouse == 4)
+							{
+								tempPlayer.money = tempPlayer.money - 4*tempL.lotPrice;
+							}
+						}
+						else
+						{
+							tempPlayer.money = tempPlayer.money - 1/8*tempL.lotPrice;
+						}
+					}
 				}
 			}
 			
 			else if (board.get(tempPlayer.getPos()).tileType == 2) { //RAILROAD
 				Railroad tempR = rrList[(tempPlayer.getPos())]; 
 				if (tempR.getRailroadStatus() == 0) { //BELUM ADA YANG PUNYA
-					System.out.println("Property dijual, apakah mau melakukan transaksi pembelian"); 
+					System.out.println("Property dijual, apakah mau melakukan transaksi pembelian?"); 
 					System.out.print("Command : "); 
 					cmd = sc.next(); 
 					if (cmd.equals("BUY")) { 
@@ -257,6 +1052,7 @@ public class Main {
 						{
 							tempPlayer.money = tempPlayer.money - tempR.railroadPrice;
 							tempR.railroadStatus = tempPlayer.playerNum;
+							System.out.println("Pembelian railroad " + tempPlayer.getPos() + " berhasil");
 						}
 						else
 						{
@@ -264,13 +1060,14 @@ public class Main {
 						}
 					}
 					if (cmd.equals("LEAVE")) { 
-						//do nothing
+						System.out.println("Yaudah");
 					} 
 				}
 				else if (tempR.getRailroadStatus() == Playing) { //PUNYA SENDIRI
-					//do nothing
+					System.out.println("Punya sendiri");
 				}
 				else { //PUNYA ORANG
+					System.out.println("Yah kena punya orang");
 					int cekr = tempR.railroadStatus;
 					int railCount = 0;
 					if (rrList[5].railroadStatus == cekr)
@@ -312,7 +1109,7 @@ public class Main {
 			else if (board.get(tempPlayer.getPos()).tileType == 3) { //UTILITY 
 				Utility tempU = utilList[(tempPlayer.getPos())]; 
 				if (tempU.getUtilityStatus() == 0) { //BELUM ADA YANG PUNYA
-					System.out.println("Property dijual, apakah mau melakukan transaksi pembelian"); 
+					System.out.println("Property dijual, apakah mau melakukan transaksi pembelian?"); 
 					System.out.print("Command : "); 
 					cmd = sc.next(); 
 					if (cmd.equals("BUY")) { 
@@ -320,6 +1117,7 @@ public class Main {
 						{
 							tempPlayer.money = tempPlayer.money - tempU.utilityPrice;
 							tempU.utilityStatus = tempPlayer.playerNum;
+							System.out.println("Pembelian utility " + tempPlayer.getPos() + " berhasil");
 						}
 						else
 						{
@@ -327,13 +1125,14 @@ public class Main {
 						}
 					}
 					else if (cmd.equals("LEAVE")) {
-						//do nothing
+						System.out.println("Yaudah");
 					} 
 				}
 				else if (tempU.getUtilityStatus() == Playing) { //PUNYA SENDIRI
-					//do nothing
+						System.out.println("Punya sendiri");
 				}
 				else { //PUNYA ORANG
+					System.out.println("Yah kena punya orang");
 					int ceku = tempU.utilityStatus;
 					int utilCount = 0;
 					if (utilList[12].utilityStatus == ceku)
@@ -359,7 +1158,7 @@ public class Main {
 				Random card = new Random();
 				if (tempPlayer.getPos() == 0) //GO
 				{
-					//do nothing
+					System.out.println("Kamu di go");
 				}
 				else if ((tempPlayer.getPos() == 2) || (tempPlayer.getPos() == 17) || (tempPlayer.getPos() == 33)) //COMMUNITY CHANCE
 				{
@@ -389,6 +1188,7 @@ public class Main {
 				else if ((tempPlayer.getPos() == 4) || (tempPlayer.getPos() == 38)) //TAX
 				{
 					tempPlayer.money = tempPlayer.money - 200;
+					System.out.println("Yah kena tax:(");
 				}
 				else if ((tempPlayer.getPos() == 7) || (tempPlayer.getPos() == 22) || (tempPlayer.getPos() == 36)) //CHANCE
 				{
@@ -411,20 +1211,22 @@ public class Main {
 				}
 				else if (tempPlayer.getPos() == 10) //JAIL
 				{
-					//do nothing
+					System.out.println("Kamu di jail");
 				}
 				else if (tempPlayer.getPos() == 20) //FREE PARKING
 				{
-					//do nothing
+					System.out.println("Kamu di free parking");
 				}
 				else if (tempPlayer.getPos() == 30) //GO TO JAIL
 				{
+					System.out.println("GO TO JAIL");
 					tempPlayer.playerPos = 10;
 					tempPlayer.jail = 1;
 				}
 			}
 			
 			//PERGANTIAN PEMAIN & PENENTUAN KALAH
+			label :
 			if (Playing == 1) 
 			{
 				if(tempPlayer.money < 0)
@@ -450,5 +1252,6 @@ public class Main {
 				}  
 			}
 		}		
+	}
 	}
 }
