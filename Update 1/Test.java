@@ -20,13 +20,13 @@ public class Test {
                 while (true) {
                     try {
 			if (counter == 30) {
-                            System.out.println("Ganti pemain");
-                            counter = 1;
-                            run();
+                            counter = 0;
+			    System.out.println("Ganti pemain");                         
+                            
                         }
                         Thread.sleep(1000);
                     } catch (InterruptedException ex) {
-                        ex.printStackTrace();
+                        
                     }
                 }
             }
