@@ -4,13 +4,22 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.List;
 import java.util.ArrayList;
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
 
 public class Main {
 	static int counter = 1;
 	static Timer timer;
 	
 	public static void main(String[] args) { 
-		
+		/*INISIASI INTERFACE 
+                Monopolyboard mb = new Monopolyboard();
+                JFrame frame = new JFrame();
+                frame.setSize(750, 600); // Set the size of the window
+                frame.add(mb);
+                frame.setVisible(true);
+                */
 		//INISIASI PLAYER
 		Player Player1 = new Player(1,0,1500,0); 
 		Player Player2 = new Player(2,0,1500,0);
@@ -188,14 +197,32 @@ public class Main {
 				}
 			}
 		});
-		timer = new Timer("Timer");
-		timer.scheduleAtFixedRate(timerTask, 0, 1000);
-		t.start();
 		
 		//LOOPING PROGRAM 
 		if (cmd.equals("MULAI")){
 		while (!(cmd.equals("END")) && !Selesai ) { 
-			if (Playing == 1) { 
+			//TAMPILAN MAP PADA LAYAR
+                        String[][] matrix = {
+                        { "S", "L", "C", "L", "L", "R", "L", "L", "U", "L", "J" },
+                        { "L", " ", " ", " ", " ", " ", " ", " ", " ", " ", "L" },
+                        { "L", " ", " ", " ", " ", " ", " ", " ", " ", " ", "L" },
+                        { "O", " ", " ", " ", " ", " ", " ", " ", " ", " ", "O" },
+                        { "L", " ", " ", " ", " ", " ", " ", " ", " ", " ", "L" },
+                        { "R", " ", " ", " ", " ", " ", " ", " ", " ", " ", "R" },
+                        { "L", " ", " ", " ", " ", " ", " ", " ", " ", " ", "C" },
+                        { "L", " ", " ", " ", " ", " ", " ", " ", " ", " ", "L" },
+                        { "U", " ", " ", " ", " ", " ", " ", " ", " ", " ", "T" },
+                        { "L", " ", " ", " ", " ", " ", " ", " ", " ", " ", "L" },
+                        { "J", "L", "L", "C", "L", "R", "T", "L", "O", "L", "S" }
+                    };
+                        for (int i = 0; i < matrix.length; i++) {
+                            for (int j = 0; j < matrix[i].length; j++) {
+                                System.out.print(matrix[i][j] + " ");
+                            }
+                            System.out.println();
+                        }
+                        
+                        if (Playing == 1) { 
 				tempPlayer = Player1;
 				tempMusuh = Player2;
 				System.out.println("----------------");
@@ -1308,5 +1335,5 @@ public class Main {
 			}
 		}		
 	}
-	}
+    }
 }
