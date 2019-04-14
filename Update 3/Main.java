@@ -13,13 +13,7 @@ public class Main {
 	static Timer timer;
 	
 	public static void main(String[] args) { 
-		/*INISIASI INTERFACE 
-                Monopolyboard mb = new Monopolyboard();
-                JFrame frame = new JFrame();
-                frame.setSize(750, 600); // Set the size of the window
-                frame.add(mb);
-                frame.setVisible(true);
-                */
+
 		//INISIASI PLAYER
 		Player Player1 = new Player(1,0,1500,0); 
 		Player Player2 = new Player(2,0,1500,0);
@@ -167,7 +161,6 @@ public class Main {
 		
 		//SCANNER	
 		Scanner sc = new Scanner(System.in);
-		String cmd = sc.next();
 		
 		//THREAD TIMER
 		TimerTask timerTask = new TimerTask()
@@ -198,34 +191,25 @@ public class Main {
 			}
 		});
 		
+		//INISIASI COMMAND
+		System.out.println("WELCOME");
+		System.out.println("Masukkan nama pemain 1");
+		String nama1 = sc.next();;
+		System.out.println("Masukkan nama pemain 2");
+		String nama2 = sc.next();;
+		System.out.println("MULAI?");
+		String cmd = sc.next();
+		
 		//LOOPING PROGRAM 
 		if (cmd.equals("MULAI")){
 		while (!(cmd.equals("END")) && !Selesai ) { 
-			//TAMPILAN MAP PADA LAYAR
-                        String[][] matrix = {
-                        { "S", "L", "C", "L", "L", "R", "L", "L", "U", "L", "J" },
-                        { "L", " ", " ", " ", " ", " ", " ", " ", " ", " ", "L" },
-                        { "L", " ", " ", " ", " ", " ", " ", " ", " ", " ", "L" },
-                        { "O", " ", " ", " ", " ", " ", " ", " ", " ", " ", "O" },
-                        { "L", " ", " ", " ", " ", " ", " ", " ", " ", " ", "L" },
-                        { "R", " ", " ", " ", " ", " ", " ", " ", " ", " ", "R" },
-                        { "L", " ", " ", " ", " ", " ", " ", " ", " ", " ", "C" },
-                        { "L", " ", " ", " ", " ", " ", " ", " ", " ", " ", "L" },
-                        { "U", " ", " ", " ", " ", " ", " ", " ", " ", " ", "T" },
-                        { "L", " ", " ", " ", " ", " ", " ", " ", " ", " ", "L" },
-                        { "J", "L", "L", "C", "L", "R", "T", "L", "O", "L", "S" }
-                    };
-                        for (int i = 0; i < matrix.length; i++) {
-                            for (int j = 0; j < matrix[i].length; j++) {
-                                System.out.print(matrix[i][j] + " ");
-                            }
-                            System.out.println();
-                        }
+
                         
-                        if (Playing == 1) { 
+            if (Playing == 1) { 
 				tempPlayer = Player1;
 				tempMusuh = Player2;
 				System.out.println("----------------");
+				System.out.println(nama1);
 				System.out.println("Giliran player 1");
 				System.out.println("Sisa uang: " + tempPlayer.money); 
 				System.out.println("Posisi sebelumnya: " + tempPlayer.playerPos);
@@ -234,6 +218,7 @@ public class Main {
 				tempPlayer = Player2;
 				tempMusuh = Player1;
 				System.out.println("----------------");
+				System.out.println(nama2);
 				System.out.println("Giliran player 2");
 				System.out.println("Sisa uang: " + tempPlayer.money);
 				System.out.println("Posisi sebelumnya: " + tempPlayer.playerPos);
@@ -1308,13 +1293,12 @@ public class Main {
 			}
 			
 			//PERGANTIAN PEMAIN & PENENTUAN KALAH
-			label :
 			if (Playing == 1) 
 			{
 				if(tempPlayer.money < 0)
 				{
 					Selesai = true;
-					System.out.println("Pemain kedua menang!");
+					System.out.println(nama2 + " menang!");
 				}
 				else
 				{ 
@@ -1326,7 +1310,7 @@ public class Main {
 				if(tempPlayer.money < 0)
 				{
 					Selesai = true;
-					System.out.println("Pemain pertama menang!");
+					System.out.println(nama1 + " menang!");
 				}
 				else
 				{ 
