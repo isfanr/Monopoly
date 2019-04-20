@@ -8,8 +8,7 @@ class Welcome implements ActionListener {
 	JLabel wLabel = new JLabel("Welcome to Monopoly");  
 	JButton wButton = new JButton("Start"); 
 	
-	Welcome() { 
-		WelcomePanel(); 
+	Welcome() {
 	}
 	
 	public void WelcomePanel() { 
@@ -25,9 +24,4 @@ class Welcome implements ActionListener {
 	}
 }
 
-public class Main { 
-	public static void main(String[] args) { 
-		new Welcome(); 
-	}
-}
 		
