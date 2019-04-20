@@ -193,6 +193,9 @@ public class Main {
 				}
 			}
 		});
+		//MASUK GAME 
+		Welcome wel = new Welcome(); 
+		wel.WelcomePanel();
 		
 		//INISIASI COMMAND
 		JOptionPane.showMessageDialog(null,"Welcome", "Monopoly", JOptionPane.INFORMATION_MESSAGE);
