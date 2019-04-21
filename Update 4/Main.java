@@ -198,13 +198,13 @@ public class Main {
 		
 		
 		//INISIASI COMMAND
-		JOptionPane.showMessageDialog(null,"Welcome", "Monopoly", JOptionPane.INFORMATION_MESSAGE);
+		/*JOptionPane.showMessageDialog(null,"Welcome", "Monopoly", JOptionPane.INFORMATION_MESSAGE);
 		
 		String nama1 = JOptionPane.showInputDialog(null, "Pemain 1: ", "New Game", JOptionPane.QUESTION_MESSAGE);
 		
 		String nama2 = JOptionPane.showInputDialog(null, "Pemain 2: ", "New Game", JOptionPane.QUESTION_MESSAGE);
 		
-		String cmd = JOptionPane.showInputDialog(null, "Ketik 'MULAI' ", "New Game", JOptionPane.QUESTION_MESSAGE);
+		String cmd = JOptionPane.showInputDialog(null, "Ketik 'MULAI' ", "New Game", JOptionPane.QUESTION_MESSAGE);*/
 		
 		//LOOPING PROGRAM 
 		if (cmd.equals("MULAI")){
