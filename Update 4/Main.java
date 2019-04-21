@@ -311,6 +311,7 @@ public class Main {
 						{
 							tempPlayer.money = tempPlayer.money - tempL.lotPrice;
 							tempL.lotStatus = tempPlayer.playerNum;
+							tempPlayer.playerProp.add(tempL);
 							System.out.println("Pembelian lot " + tempPlayer.getPos() + " berhasil");
 						}
 						else
@@ -1120,6 +1121,7 @@ public class Main {
 						{
 							tempPlayer.money = tempPlayer.money - tempR.railroadPrice;
 							tempR.railroadStatus = tempPlayer.playerNum;
+							tempPlayer.playerProp.add(tempR);
 							System.out.println("Pembelian railroad " + tempPlayer.getPos() + " berhasil");
 						}
 						else
@@ -1189,6 +1191,7 @@ public class Main {
 						{
 							tempPlayer.money = tempPlayer.money - tempU.utilityPrice;
 							tempU.utilityStatus = tempPlayer.playerNum;
+							tempPlayer.playerProp.add(tempU);
 							System.out.println("Pembelian utility " + tempPlayer.getPos() + " berhasil");
 						}
 						else
