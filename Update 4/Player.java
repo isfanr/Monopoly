@@ -4,11 +4,13 @@ public class Player {
 	int money; 
 	int jail;
 	int numOfPlayer = 0; 
+	List<Property> playerProp;
 	
 	public Player(int playerNum, int playerPos, int money, int jail) {
 		this.playerNum = playerNum; 
 		this.playerPos = playerPos;
 		this.money = money; 
+		this.playerProp = new ArrayList<Property>();
 	}
 	
 	public int getPlayer(){ 
